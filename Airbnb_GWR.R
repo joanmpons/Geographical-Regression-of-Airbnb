@@ -122,8 +122,8 @@ logairbnb$coefreviews<-results$reviews
 logairbnb$coefdist_center<-results$dist_center
 logairbnb$coefdist_Bar<-results$dist_Bar
 
-
-neighbourhood <- readOGR("BCN_UNITATS_ADM")
+#Creating map
+neighbourhood <- readOGR("/Data/BCN_UNITATS_ADM")
 g<-as.data.frame(logairbnb$coefdist_center)
 g<-cbind(logairbnb$coefdist_Bar,g)
 g<-cbind(logairbnb$coefreviews,g)
@@ -142,6 +142,7 @@ g<-spTransform(g,CRS("+proj=longlat +datum=WGS84 +ellps=WGS84 +towgs84=0,0,0"))
 neighsp<-spTransform(neighbourhood,CRS("+proj=longlat +datum=WGS84 +ellps=WGS84 +towgs84=0,0,0"))
 mapdata1 <- as.data.frame(g)
 mapdata2<- fortify(neighsp, region ="NOM")
+
 #BARCELONA MAP
 ggplot(mapdata2, aes(long,lat,colour = factor(id))) +
   geom_polygon(fill = "white", colours = terrain.colors(10))+coord_quickmap()
@@ -166,7 +167,7 @@ den_accom<-ggplot(mapdata3,aes(longac,latac))+
 
 grid.arrange(accom,den_accom,nrow=1)
 
-#map with only points selected from 1000 obs that are at a certain distance from center
+#Map with only points selected from 1000 obs that are at a certain distance from center
 mapdata1$dist<-logairbnb$dist_center
 accom<-ggplot(subset(mapdata1, mapdata1$dist<0.01),aes(long,lat))+
   geom_point(colour="blue",size=0.05)+
@@ -185,6 +186,7 @@ gwr.point1<-ggplot(logairbnb, aes(x=x,y=y))+
   geom_point(aes(colour=logairbnb$coefdist_center))+
   scale_colour_gradientn(colours = terrain.colors(10), guide_legend(title="Coefs"))
 gwr.point1
+
 #Maps
 #distCent
 gwr.point1<-ggplot(mapdata1, aes(x=long,y=lat))+
