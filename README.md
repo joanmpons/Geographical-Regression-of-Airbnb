@@ -1,4 +1,4 @@
-# Airbnb
+# Geographical Regression of Airbnbs
 *R, Geographical Regression*
 <p align="justify"> 
 La finalidad del proyecto es estudiar el impacto de la localización en el precio de los pisos ofertados en la plataforma Airbnb y algunos de sus predictores. Es decir, más allá de intentar determinar si los apartamentos céntricos presentan precios más elevados, se analiza cómo cambia la importancia de este y otros predictores, como la capacidad o el número de reseñas, para alojamientos en diferentes zonas de Barcelona. Esto se consigue gracias a la aplicación de un modelo de regresión ponderada geográficamente (GWR). 
