@@ -1,3 +1,4 @@
+#Libraries
 library(spgwr)
 library(car)
 library(hexbin)
@@ -18,26 +19,18 @@ library(gridExtra)
 library(grid)
 library(broom)
 library(extrafont)
-setwd("~/Desktop/Master/Stat")
 
+#Import data
 airbnb <- read.csv("~/Desktop/Master/Stat/airbnb.txt")
-#quantile(airbnb$price, c(.2, .4, .6,.8,.9,.95,.98))
+
+#Data wrangling
 airbnb<-airbnb %>%
   select(!c(id,url,found,revised,host.id))%>%
   mutate(room_type=factor(room_type))%>%
   mutate(price=as.numeric(price))%>%
   na.omit()
 
-
-#heatmap with scale
-bbt<-apply(airbnb[,4:8], 2, function(x) tapply(x, airbnb$room_type, mean))
-hit <- heatmaply(bbt,dendrogram = "none",xlab = "", ylab = "", main = "",scale = "column",margins = c(60,100,40,20),
-              grid_color = "white",grid_width = 0.00001,titleX = FALSE,hide_colorbar = FALSE,branches_lwd = 0.1,
-              label_names = c("Room_type", "Feature:", "Value"),fontsize_row = 7, fontsize_col = 5,labCol = colnames(bbt),
-              labRow = rownames(bbt),heatmap_layers = theme(axis.line=element_blank()))
-hit
-
-  
+#Hexagonal plot
 airbnb%>%
   sample_n(7000)%>%
   filter(price<400)%>%
@@ -55,11 +48,13 @@ logairbnb<-airbnb%>%
   mutate(reviews=log(reviews+1))%>%
   na.omit()%>%
   sample_n(1000)
+
 #To eliminate infinity values from the log
 #logairbnb<-logairbnb%>%
 #mutate_if(is.numeric, list(~na_if(., Inf))) %>% 
 #mutate_if(is.numeric, list(~na_if(., -Inf)))
 
+#Statistical analysis of the data
 histogram(logairbnb$price)
 histogram(logairbnb$price^(1/2))
 qqPlot(logairbnb$price)
@@ -68,8 +63,9 @@ logairbnb$price<-logairbnb$price^(1/2)
 hist(logairbnb$reviews)
 histogram(logairbnb$capacity)
 histogram(~logairbnb$price|logairbnb$room_type)
+cor(subset(logairbnb,select = c(1,2,5,6,8)))
 
-cor(subset(logairbnb,select = c(1,2,5,6,8)))#For NA values use = "complete.obs"
+#First attempt at modelling the data with a linear regression
 model1 <- lm(price~capacity+reviews+room_type,data = logairbnb)
 summary(model1)
 plot(model1)
