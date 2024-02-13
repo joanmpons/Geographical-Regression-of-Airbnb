@@ -21,7 +21,7 @@ library(broom)
 library(extrafont)
 
 #Import data
-airbnb <- read.csv("~/Desktop/Master/Stat/airbnb.txt")
+airbnb <- read.csv("/Data/airbnb.txt")
 
 #Data wrangling
 airbnb<-airbnb %>%
@@ -70,6 +70,7 @@ model1 <- lm(price~capacity+reviews+room_type,data = logairbnb)
 summary(model1)
 plot(model1)
 
+#Data preprocessing for geographical analysis
 center<-c(2.170047909347857,41.38698088293232)
 center<-as.matrix(center)
 center<-t(center)
@@ -79,58 +80,43 @@ cords<-as.matrix(cords)
 cords<-rbind(center,cords)
 cords<-as.matrix(cords)
 
-
 dist_center<-dist(cords, method = "euclidean", diag = FALSE, upper = FALSE)
 dist_center<-as.matrix(dist_center)
 dist_center<-dist_center[-1,1]
 dist_center<-as.matrix(dist_center)
 logairbnb$dist_center<-dist_center
+
+#Analyzing the relationship between distance to the center and price
 scatterplot(logairbnb$dist_center,logairbnb$price)
 
-Barceloneta=c(2.1925032013629333, 41.37853679009465)
-Barceloneta<-as.matrix(Barceloneta)
-Barceloneta<-t(Barceloneta)
-cords<-subset(logairbnb,select=c(1,2))
-cords<-as.matrix(cords)
-cords<-rbind(Barceloneta,cords)
-cords<-as.matrix(cords)
-
-dist_Bar<-dist(cords, method = "euclidean", diag = FALSE, upper = FALSE)
-dist_Bar<-as.matrix(dist_Bar)
-dist_Bar<-dist_Bar[-1,1]
-logairbnb$dist_Bar<-dist_Bar
-scatterplot(logairbnb$dist_Bar,logairbnb$price)
-
-
-
+#Second attempt at modelling the data with a linear regression
 cor(subset(logairbnb,select = c(1,2,5,6,8,9,10)))
 model2 <- lm(price~capacity+reviews+dist_center+dist_Bar+room_type,data = logairbnb)
 summary(model2)
 plot(model2)
 
-#gwr
+#Modelling the data with a Geographically Weighted Regression (GWR)
 resids<-residuals(model2)
 colours <- c("dark blue", "blue", "red", "dark red") 
 
 spdf<-SpatialPointsDataFrame(coords =cbind(logairbnb$x,logairbnb$y),data = logairbnb, proj4string = CRS("+proj=longlat +datum=WGS84 +ellps=WGS84 +towgs84=0,0,0"))
 
-#spplot(spdf,cuts = 5)
-
+#Map showing the residuals of our second linear model to check for geographical correlations
 map.resids <- SpatialPointsDataFrame(data=data.frame(resids), coords=cbind(logairbnb$x,logairbnb$y)) 
 spplot(map.resids, cuts=quantile(resids), col.regions=colours, cex=1) 
 
-#calculate kernel bandwidth
+#Calculating the kernel bandwidth
 GWRbandwidth <- gwr.sel(price~capacity+reviews+dist_center+dist_Bar+room_type,data = logairbnb, coords=cbind(logairbnb$x,logairbnb$y),adapt=T) 
-#run the gwr model
 
+#Running the GWR model
 gwr.model = gwr(price~capacity+reviews+dist_center+dist_Bar+room_type,data = logairbnb, coords=cbind(logairbnb$x,logairbnb$y), adapt=GWRbandwidth, hatmatrix=TRUE, se.fit=TRUE) 
-#print the results of the model
-gwr.model
 
+#Printing the results of the model
+gwr.model
 results<-as.data.frame(gwr.model$SDF)
 head(results)
 
-#attach coefficients to original dataframe
+#Attaching the coefficients to the original dataframe
 logairbnb$coefcapacity<-results$capacity
 logairbnb$coefreviews<-results$reviews
 logairbnb$coefdist_center<-results$dist_center
