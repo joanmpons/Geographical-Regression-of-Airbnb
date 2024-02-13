@@ -31,7 +31,7 @@ En este caso, puede intuirse la silueta de Barcelona, donde cada hexágono agrup
 </p>
 
 <p align="center">
-<img src="Images/Graph_1" width="500">
+<img src="Images/Graph_1.png" width="500">
 </p>
 
 ### Porcentaje de Menciones en los Resultados
@@ -42,7 +42,7 @@ Como puede observarse La Vanguardia esta en un 8,33% de los headers y en un 15,5
 </p>
 
 <p align="center">
-<img src="Images/Graph_2" width="500">
+<img src="Images/Graph_2.png" width="500">
 </p>
 
 ### Ranking por Búsqueda
@@ -53,7 +53,7 @@ En este gráfico podemos cuáles han sido las búsquedas relacionadas sugeridas 
 </p>
 
 <p align="center">
-<img src="Images/Graph_3" width="500">
+<img src="Images/Graph_3.png" width="500">
 </p>
 
 ### Número de Menciones por Ranking
@@ -64,7 +64,7 @@ En este caso el resultado es de una mención en el top uno tanto para headers co
 </p>
 
 <p align="center">
-<img src="Images/Graph_4" width="500">
+<img src="Images/Graph_4.png" width="500">
 </p>
 
 ### Creación del Documento de Reporting
@@ -72,5 +72,8 @@ En este caso el resultado es de una mención en el top uno tanto para headers co
 Si la aplicación tiene que ser usada por usuarios no técnicos, lo mas conveniente es crear un archivo ejecutable o un .bat a partir del script que genere un archivo con los gráficos presentados anteriormente. En este caso las visualizaciones se han realizado con la librería plotly, una de las ventajas de la cual es que cuenta con una función para extraer los gráficos en formato html e incrustarlos en un archivo.
 
 <p align="center">
-<img src="Images/HTML" width="500">
+<img src="Images/Graph_5.png" width="500">
+</p>
+<p align="center">
+<img src="Images/Graph_6.png" width="500">
 </p>
